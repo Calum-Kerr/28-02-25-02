@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Edit PDF - NASA PDF Tool{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <!-- Display flash messages for user feedback -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-warning" role="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <h2 class="text-center">Edit PDF Text</h2>
+        <p class="text-center">
+            Make your changes below. Each field represents a line of text extracted from your PDF.
+            Once you're done, click "Save Edits" to generate the modified PDF.
+        </p>
+        
+        <!-- Form for submitting edits -->
+        <form method="POST" action="{{ url_for('main.save', file_id=file_id) }}" id="editForm">
+            <!-- Hidden input to store JSON string of edits -->
+            <input type="hidden" name="edits" id="editsInput">
+            
+            <!-- Loop over each page -->
+            {% for page_index in range(extraction.pages|length) %}
+                {% set page = extraction.pages[page_index] %}
+                <div class="card my-3">
+                    <div class="card-header">
+                        <h4>Page {{ page_index + 1 }}</h4>
+                    </div>
+                    <div class="card-body">
+                        {% for span_index in range(page|length) %}
+                            {% set span = page[span_index] %}
+                            <div class="form-group">
+                                <label for="field-{{ page_index }}-{{ span_index }}">
+                                    Line {{ span_index + 1 }}
+                                </label>
+                                <input type="text"
+                                    class="form-control edit-field"
+                                    id="field-{{ page_index }}-{{ span_index }}"
+                                    data-page="{{ page_index }}"
+                                    data-index="{{ span_index }}"
+                                    value="{{ span.text | e }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            
+            <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg">Save Edits</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    /**
+     * This script collects all edited text fields and builds a nested JSON object,
+     * mapping page numbers to their corresponding text span indices and new text values.
+     * The resulting JSON string is then set in the hidden input 'edits' before submission.
+     */
+    document.getElementById('editForm').addEventListener('submit', function(event) {
+        var edits = {};
+        var fields = document.querySelectorAll('.edit-field');
+        
+        // Iterate over each editable field to capture user changes
+        fields.forEach(function(field) {
+            var page = field.getAttribute('data-page');
+            var index = field.getAttribute('data-index');
+            
+            // Initialise page object if not already set
+            if (!edits.hasOwnProperty(page)) {
+                edits[page] = {};
+            }
+            edits[page][index] = field.value;
+        });
+        
+        // Set the hidden 'edits' input with the JSON string of edits
+        document.getElementById('editsInput').value = JSON.stringify(edits);
+    });
+</script>
+{% endblock %}

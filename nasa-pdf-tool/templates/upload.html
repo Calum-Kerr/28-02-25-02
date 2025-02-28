@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Upload PDF - NASA PDF Tool{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <!-- Flash messages for user feedback -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-warning" role="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <h2 class="text-center">Upload PDF</h2>
+        <p class="text-center">Select a PDF file to begin processing.</p>
+        <form method="POST" action="{{ url_for('main.upload') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="pdf_file">Choose PDF File:</label>
+                <input type="file" class="form-control" name="pdf_file" id="pdf_file" accept=".pdf" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Upload PDF</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

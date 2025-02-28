@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        Base Template for NASA PDF Tool
+        This file establishes the common layout and includes necessary CSS/JS assets.
+        Adheres to NASA coding guidelines by keeping design clean, secure, and well-documented.
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NASA PDF Tool{% endblock %}</title>
+    
+    <!-- Link to custom CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Include Bootstrap for modern, responsive design -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts for a sleek, modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Fallback inline styles in case external CSS fails to load */
+      body {
+          font-family: 'Open Sans', sans-serif;
+          background-color: #ffffff;
+          color: #333333;
+          margin: 0;
+          padding: 0;
+      }
+      .container {
+          max-width: 960px;
+          margin: auto;
+          padding: 20px;
+      }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Main container for page content -->
+    <div class="container my-4">
+        {% block content %}
+        <!-- Page-specific content goes here -->
+        {% endblock %}
+    </div>
+    
+    <!-- jQuery and Bootstrap JS for dynamic components -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- Custom JS file -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
